@@ -6,8 +6,7 @@
 #include "Character/AuraCharacterBase.h"
 #include "AuraCharacter.generated.h"
 
-class USpringArmComponent;
-class UCameraComponent;
+class AAuraPlayerState;
 /**
  * 
  */
@@ -18,4 +17,8 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase
 
 public:
 	AAuraCharacter();
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+	void InitAbilityActorInfo();
+	
 };
