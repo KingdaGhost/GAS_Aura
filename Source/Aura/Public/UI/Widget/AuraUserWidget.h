@@ -16,7 +16,8 @@ class AURA_API UAuraUserWidget : public UUserWidget
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetController(UObject* InWidgetController);
-	
+
+	/** The WidgetController is declared as a UObject for the purpose of being able to use any type of WidgetController. */
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UObject> WidgetController;
 

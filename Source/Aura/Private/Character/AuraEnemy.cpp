@@ -15,7 +15,7 @@ AAuraEnemy::AAuraEnemy()
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	
-	AuraAttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AuraAttributeSet");
+	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 }
 
 void AAuraEnemy::BeginPlay()

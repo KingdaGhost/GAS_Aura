@@ -8,7 +8,7 @@
 #include "AuraPlayerState.generated.h"
 
 class UAuraAbilitySystemComponent;
-class UAuraAttributeSet;
+class UAttributeSet;
 
 /**
  * 
@@ -20,11 +20,11 @@ class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInte
 public:
 	AAuraPlayerState();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	UAuraAttributeSet* GetAttributeSet() const { return AuraAttributeSet; }
+	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 protected:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 	UPROPERTY()
-	TObjectPtr<UAuraAttributeSet> AuraAttributeSet;
+	TObjectPtr<UAttributeSet> AttributeSet;
 };

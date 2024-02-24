@@ -6,6 +6,7 @@
 #include "Character/AuraCharacterBase.h"
 #include "AuraCharacter.generated.h"
 
+class AAuraPlayerController;
 class AAuraPlayerState;
 /**
  * 
@@ -20,5 +21,10 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	void InitAbilityActorInfo();
+
+	UPROPERTY()
+	TObjectPtr<AAuraPlayerState> AuraPlayerState;
+	UPROPERTY()
+	TObjectPtr<AAuraPlayerController> AuraPlayerController;
 	
 };
