@@ -69,7 +69,7 @@ void AAuraPlayerController::CursorTrace()
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	LastActor = ThisActor;
-	ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+	ThisActor = CursorHit.GetActor();
 
 	/**
 	 *	Line trace from cursor. There are several scenarios:
