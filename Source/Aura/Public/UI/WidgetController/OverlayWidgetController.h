@@ -20,10 +20,15 @@ class AURA_API UOverlayWidgetController : public UAuraWidgetController
 	GENERATED_BODY()
 public:
 	virtual void BroadcastInitialValue() override;
+	virtual void BindCallbacksToDependencies() override;
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FOnHealthChangedSignature OnHealthChanged; //On health Changed is the delegate itself
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FOnMaxHealthChangedSignature OnMaxHealthChanged;
+
+protected:
+	void HealthChanged(const FOnAttributeChangeData& Data) const;
+	void MaxHealthChanged(const FOnAttributeChangeData& Data) const;
 };

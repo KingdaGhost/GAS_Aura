@@ -12,6 +12,7 @@ UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetCont
 		// NewObject<>() is used to create a UObject
 		OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
 		OverlayWidgetController->SetWidgetControllerParams(WCParams); // This sets the member variables of the AuraWidgetController base class
+		OverlayWidgetController->BindCallbacksToDependencies();
 		
 		return OverlayWidgetController;
 	}
@@ -29,6 +30,7 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 	const FWidgetControllerParams WidgetControllerParams(PC, PS, ASC, AS); // This constructs the constructor of the struct FWidgetControllerParams in the AuraWidgetController class by initializing all the member variables of its struct
 	UOverlayWidgetController* WidgetController = GetOverlayWidgetController(WidgetControllerParams);
 	OverlayWidget->SetWidgetController(WidgetController); // Setting the Widget Controller in the AuraUserWidget class
+
 	WidgetController->BroadcastInitialValue();
 		
 	Widget->AddToViewport();
