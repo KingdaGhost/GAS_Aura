@@ -3,7 +3,10 @@ DerivedDataCache
 Intermediate
 Saved
 Build
-Content
+Content/Assets
+Content/Collections
+Content/Developers
+Content/Maps
 .vscode
 .vs
 *.VC.db
