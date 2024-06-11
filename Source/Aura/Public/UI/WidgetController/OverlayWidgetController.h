@@ -6,7 +6,7 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
-// We use Dynamic because we want to assign events to them in widget Bleprint and Multicast because multiple widget blueprint may want to bind to this delegate
+// We use Dynamic because we want to assign events to them in widget Blueprint and Multicast because multiple widget blueprint may want to bind to this delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float, NewHealth);
 //This is the delegate type both these two
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChangedSignature, float, NewMaxHealth);
