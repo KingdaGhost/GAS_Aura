@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "AuraCharacterBase.generated.h"
 
+class UGameplayEffect;
 class UAbilitySystemComponent;
 class UAttributeSet;
 
@@ -21,7 +22,7 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 protected:
 	virtual void BeginPlay() override;
-
+	void InitializePrimaryAttributes() const;
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon; 
 
@@ -30,8 +31,10 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
+	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
+
 private:
 	virtual void InitAbilityActorInfo();
-	
 
 };
