@@ -4,12 +4,40 @@
 #include "AuraGameplayTags.h"
 
 #include "GameplayTagsManager.h"
+#include "NativeGameplayTags.h"
 
 // This is how we initialize a static variable
 FAuraGameplayTags FAuraGameplayTags::GameplayTags;
 
+//The below works in conjunction with the UE_DECLARE_GAMEPLAY_TAG_EXTERN(TagName);
+/*UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_ARMOR, "Attributes.Secondary.Armor", "Reducing damage taken, improves Block Chance");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_ARMORPENETRATION, "Attributes.Secondary.ArmorPenetration", "Bypass Enemy armor");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_BLOCKCHANCE, "Attributes.Secondary.BlockChance", "The chances to block enemy attack damage");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_CRITICALHITCHANCE, "Attributes.Secondary.CriticalHitChance", "The chances to critically damage enemy");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_CRITICALHITDAMAGE, "Attributes.Secondary.CriticalHitDamage", "The amount of damage to critically damage enemy");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_CRITICALHITRESISTANCE, "Attributes.Secondary.CriticalHitResistance", "The amount of resistance to avoid getting critically damaged by enemy");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_HEALTHREGENERATION, "Attributes.Secondary.HealthRegeneration", "The amount of health generated per second");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_MANAREGENERATION, "Attributes.Secondary.ManaRegeneration", "The amount of mana generated per second");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_MAXHEALTH, "Attributes.Secondary.MaxHealth", "The total amount of Health a character has");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(TAG_ATTRIBUTES_SECONDARY_MAXMANA, "Attributes.Secondary.MaxMana", "The total amount of Mana a character has");*/
+
 void FAuraGameplayTags::InitializeNativeGameplayTags()
 {
+	// Primary Attributes
+	GameplayTags.Attributes_Primary_Strength = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Strength"), FString("Increases Physical damage"));
+	GameplayTags.Attributes_Primary_Intelligence = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Intelligence"), FString("Increases magical damage"));
+	GameplayTags.Attributes_Primary_Resilience = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Resilience"), FString("Increases Armor and Armor Penetration"));
+	GameplayTags.Attributes_Primary_Vigor = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Vigor"), FString("Increases Health"));
+
+	// Secondary Attributes
 	GameplayTags.Attributes_Secondary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Armor"), FString("Reducing damage taken, improves Block Chance"));
-	
+	GameplayTags.Attributes_Secondary_ArmorPenetration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.ArmorPenetration"), FString("Bypass Enemy armor"));
+	GameplayTags.Attributes_Secondary_BlockChance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.BlockChance"), FString("The chances to block enemy attack damage"));
+	GameplayTags.Attributes_Secondary_CriticalHitChance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.CriticalHitChance"), FString("The chances to critically damage enemy"));
+	GameplayTags.Attributes_Secondary_CriticalHitDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.CriticalHitDamage"), FString("The amount of damage to critically damage enemy"));
+	GameplayTags.Attributes_Secondary_CriticalHitResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.CriticalHitResistance"), FString("Reduces critical hit chance of attacking enemies"));
+	GameplayTags.Attributes_Secondary_HealthRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.HealthRegeneration"), FString("The amount of health generated per second"));
+	GameplayTags.Attributes_Secondary_ManaRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.ManaRegeneration"), FString("The amount of mana generated per second"));
+	GameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxHealth"), FString("The total amount of Health a character can obtain"));
+	GameplayTags.Attributes_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxMana"), FString("The total amount of Mana a character  can obtain"));
 }
