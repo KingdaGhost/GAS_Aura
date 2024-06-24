@@ -22,7 +22,7 @@ class AURA_API AAuraHUD : public AHUD
 	GENERATED_BODY()
 public:
 	template <typename T>
-	T* GetOrCreateWidgetController(const FWidgetControllerParams& WCParams, T* WidgetController, TSubclassOf<T> WidgetControllerClass);
+	T* GetOrCreateWidgetController(const FWidgetControllerParams& WCParams, TObjectPtr<T>& WidgetController, TSubclassOf<T> WidgetControllerClass);
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
 	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);

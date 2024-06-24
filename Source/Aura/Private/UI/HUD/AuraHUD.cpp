@@ -8,7 +8,7 @@
 
 template <typename T>
 T* AAuraHUD::GetOrCreateWidgetController(const FWidgetControllerParams& WCParams,
-	T* WidgetController, TSubclassOf<T> WidgetControllerClass)
+	TObjectPtr<T>& WidgetController, TSubclassOf<T> WidgetControllerClass)
 {
 	if (WidgetController == nullptr)
 	{
