@@ -114,7 +114,7 @@ public:
 	/** Functions */
 
 	/** Variables */
-
+	
 	/*
 	 *	Primary Attributes
 	 */

@@ -21,6 +21,7 @@ public:
 
 	virtual void BindCallbacksToDependencies() override;
 	virtual void BroadcastInitialValue() override;
+	void BroadcastAttributeInfo(const FGameplayTag& AttributeTag) const;
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FAttributeInfoSignature AttributeInfoDelegate;
