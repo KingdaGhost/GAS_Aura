@@ -45,6 +45,7 @@ void AAuraPlayerController::SetupInputComponent()
 
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent); // We'll get a  crash when the check fails
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
