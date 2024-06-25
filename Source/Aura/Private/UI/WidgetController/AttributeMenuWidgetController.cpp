@@ -11,12 +11,12 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
 	check(AttributeInfo);
 
-	for (FAuraAttributeInfo& Tag : AttributeInfo.Get()->AttributeInformation)
+	for (FAuraAttributeInfo& AttrInfo : AttributeInfo.Get()->AttributeInformation)
 	{
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Tag.AttributeGetter).AddLambda(
-			[this, Tag](const FOnAttributeChangeData& Data)
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttrInfo.AttributeGetter).AddLambda(
+			[this, AttrInfo](const FOnAttributeChangeData& Data)
 			{
-				BroadcastAttributeInfo(Tag.AttributeTag);
+				BroadcastAttributeInfo(AttrInfo.AttributeTag);
 			}
 		);
 	}
@@ -27,9 +27,9 @@ void UAttributeMenuWidgetController::BroadcastInitialValue()
 	// The DataAsset
 	check(AttributeInfo);
 
-	for (FAuraAttributeInfo& Tag : AttributeInfo.Get()->AttributeInformation)
+	for (FAuraAttributeInfo& AttrInfo : AttributeInfo.Get()->AttributeInformation)
 	{
-		BroadcastAttributeInfo(Tag.AttributeTag);
+		BroadcastAttributeInfo(AttrInfo.AttributeTag);
 	}
 }
 
