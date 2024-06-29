@@ -66,5 +66,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> Spline;
+
+	FHitResult CursorHit;
 };
 
