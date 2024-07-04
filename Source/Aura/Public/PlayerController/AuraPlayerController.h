@@ -40,11 +40,17 @@ private:
 	UAuraAbilitySystemComponent* GetASC();
 	void AutoRun();
 	
+	void ShiftPressed() { bShiftKeyDown = true; }
+	void ShiftReleased() { bShiftKeyDown = false; }
+	
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> AuraContext;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> MoveAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> ShiftAction;
 
 	TScriptInterface<IEnemyInterface> LastActor;
 	TScriptInterface<IEnemyInterface>  ThisActor;
@@ -68,5 +74,6 @@ private:
 	TObjectPtr<USplineComponent> Spline;
 
 	FHitResult CursorHit;
+	bool bShiftKeyDown = false;
 };
 
