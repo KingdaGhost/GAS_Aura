@@ -19,7 +19,7 @@ void UTargetDataUnderMouse::Activate()
 	{
 		SendMouseCursorData();
 	}
-	else
+	else //This is executed only on the server. This is the part for receiving data.
 	{
 		const FGameplayAbilitySpecHandle SpecHandle = GetAbilitySpecHandle();
 		const FPredictionKey ActivationPredictionKey = GetActivationPredictionKey();
@@ -53,12 +53,12 @@ void UTargetDataUnderMouse::SendMouseCursorData()
 		FGameplayTag(),
 		AbilitySystemComponent->ScopedPredictionKey);
 
-	if(ShouldBroadcastAbilityTaskDelegates())
+	if(ShouldBroadcastAbilityTaskDelegates()) // to check for if an ability is still active and proceed else do not
 	{
 		ValidData.Broadcast(DataHandle);
 	}
 }
-// This will be called on the server
+// This will be called on the server when the server received a replicated target data
 void UTargetDataUnderMouse::OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle, FGameplayTag ActivationTag)
 {
 	AbilitySystemComponent->ConsumeClientReplicatedTargetData(GetAbilitySpecHandle(), GetActivationPredictionKey());

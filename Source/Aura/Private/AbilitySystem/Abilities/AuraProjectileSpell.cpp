@@ -32,7 +32,9 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
 		SpawnTransform.SetRotation(Rotation.Quaternion());
-		
+
+		// SpawnActorDeferred is for spawning an actor in the world when all the things that need to be attached to it has been set.
+		// In this case, the gameplay ability spec for damage is set before we spawn the projectile and by calling FinishSpawning on the projectile, we conclude that everything is in order and for it to be spawn to the world
 		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 			ProjectileClass,
 			SpawnTransform,
