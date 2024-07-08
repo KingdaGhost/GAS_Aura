@@ -27,7 +27,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
-	void InitializeDefaultAttributes() const;
+	virtual void InitializeDefaultAttributes() const;
 	void AddCharacterAbilities();
 	virtual FVector GetCombatSocketLocation() override;
 	
@@ -39,7 +39,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
