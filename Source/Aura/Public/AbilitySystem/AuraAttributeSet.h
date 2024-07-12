@@ -192,6 +192,7 @@ public:
 
 	/**
 	 *	Meta Attributes
+	 *	They do not replicate. The calculations are done only on the server for these
 	 */
 
 	UPROPERTY(BlueprintReadOnly, Category = "Meta Attributes")
