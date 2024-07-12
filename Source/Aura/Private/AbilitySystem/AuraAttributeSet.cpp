@@ -49,15 +49,9 @@ void UAuraAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribu
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
 	}
-	if (Attribute == GetMaxHealthAttribute())
-	{
-	}
 	if (Attribute == GetManaAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
-	}
-	if (Attribute == GetMaxManaAttribute())
-	{
 	}
 }
 
@@ -109,6 +103,18 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+	}
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		const float LocalIncomingDamage = GetIncomingDamage();
+		SetIncomingDamage(0.f);
+		if (LocalIncomingDamage > 0)
+		{
+			const float NewHealth = GetHealth() - LocalIncomingDamage;
+			SetHealth(FMath::Clamp(NewHealth, 0, GetMaxHealth()));
+
+			const bool bFatal = NewHealth <= 0.f;
+		}
 	}
 }
 
