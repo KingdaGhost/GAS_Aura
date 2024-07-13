@@ -27,4 +27,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateFacingTarget(const FVector& TargetLocation);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) //BlueprintNativeEvent is going to automatically generate a virtual native version that exists in c++ that we can override
+	UAnimMontage* GetHitReactMontage();
 };
