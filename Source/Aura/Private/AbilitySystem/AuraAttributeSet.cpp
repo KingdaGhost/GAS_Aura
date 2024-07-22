@@ -137,19 +137,24 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			
 			const bool bBlock = UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
 			const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
+
+			FString Message = FString();
+			if (bBlock && bCriticalHit) Message = FString("Blocked Critical Hit!");
+			else if (bBlock) Message = FString("Blocked!");
+			else if (bCriticalHit) Message = FString("Critical Hit!");
 			
-			ShowFloatingText(Props, LocalIncomingDamage, bBlock, bCriticalHit);
+			ShowFloatingText(Props, LocalIncomingDamage, bBlock, bCriticalHit, FText::FromString(Message));
 		}
 	}
 }
 
-void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit) const
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit, const FText& Message) const
 {
 	if (Props.SourceCharacter != Props.TargetCharacter)
 	{
 		if(AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
 		{
-			PC->ClientShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
+			PC->ClientShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit, Message);
 		}
 	}
 }

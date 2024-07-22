@@ -32,7 +32,7 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	
 }
 
-void AAuraPlayerController::ClientShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit)
+void AAuraPlayerController::ClientShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit, const FText& Message)
 {
 	if (IsValid(TargetCharacter) && DamageTextComponentClass)
 	{
@@ -41,7 +41,7 @@ void AAuraPlayerController::ClientShowDamageNumber_Implementation(float DamageAm
 		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		//As soon as attach to the target character is called, we want to detach it from the character because we dont want the text to follow the character
 		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-		DamageText->SetDamageText(DamageAmount, bBlockedHit, bCriticalHit);
+		DamageText->SetDamageTextAndMessage(DamageAmount, bBlockedHit, bCriticalHit, Message);
 	}
 }
 
