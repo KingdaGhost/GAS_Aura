@@ -31,5 +31,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) //BlueprintNativeEvent is going to automatically generate a virtual native version that exists in c++ that we can override
 	UAnimMontage* GetHitReactMontage();
 	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UAnimMontage* GetAttackMontage();
+	
 	virtual void Die() = 0;
 };

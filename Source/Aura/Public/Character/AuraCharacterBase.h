@@ -26,6 +26,7 @@ public:
 
 	//We have implementation here because it is a BlueprintNativeEvent meaning it can be implement here in c++ as well as blueprint
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual UAnimMontage* GetAttackMontage_Implementation() override;
 	virtual void Die() override;
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -78,4 +79,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	TObjectPtr<UAnimMontage> AttackMontage;
 };
