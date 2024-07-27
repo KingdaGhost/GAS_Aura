@@ -3,8 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
+
+USTRUCT(BlueprintType)
+struct FTaggedMontage
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UAnimMontage* Montage = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag MontageTag;
+	
+};
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, BlueprintType)
@@ -33,9 +47,6 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) //BlueprintNativeEvent is going to automatically generate a virtual native version that exists in c++ that we can override
 	UAnimMontage* GetHitReactMontage();
 	
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	UAnimMontage* GetAttackMontage();
-	
 	virtual void Die() = 0;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
@@ -43,4 +54,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	AActor* GetAvatar();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	TArray<FTaggedMontage> GetAttackMontages() const;
 };

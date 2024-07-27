@@ -35,11 +35,6 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
-UAnimMontage* AAuraCharacterBase::GetAttackMontage_Implementation()
-{
-	return AttackMontage;
-}
-
 void AAuraCharacterBase::Die()
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
@@ -107,6 +102,11 @@ bool AAuraCharacterBase::IsDead_Implementation() const
 AActor* AAuraCharacterBase::GetAvatar_Implementation()
 {
 	return this;
+}
+
+TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation() const
+{
+	return AttackMontages;
 }
 
 void AAuraCharacterBase::Dissolve()
