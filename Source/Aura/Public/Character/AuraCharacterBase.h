@@ -25,10 +25,15 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	//We have implementation here because it is a BlueprintNativeEvent meaning it can be implement here in c++ as well as blueprint
+	
+	/* CombatInterface */
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual UAnimMontage* GetAttackMontage_Implementation() override;
 	virtual void Die() override;
-
+	virtual FVector GetCombatSocketLocation_Implementation() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override;
+	/* CombatInterface */
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();
 	
@@ -37,7 +42,7 @@ protected:
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
 	virtual void InitializeDefaultAttributes() const;
 	void AddCharacterAbilities();
-	virtual FVector GetCombatSocketLocation_Implementation() override;
+	
 	void Dissolve();
 	
 	UFUNCTION(BlueprintImplementableEvent)
@@ -71,6 +76,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
+
+	bool bDead = false;
 private:
 	virtual void InitAbilityActorInfo();
 
