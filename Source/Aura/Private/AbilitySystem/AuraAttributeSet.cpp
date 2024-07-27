@@ -163,6 +163,12 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float D
 		if(AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller))
 		{
 			PC->ClientShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit, Message);
+			return;
+		}
+		// This is for checking when enemies are attacking aura
+		if(AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.TargetCharacter->Controller))
+		{
+			PC->ClientShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit, Message);
 		}
 	}
 }
