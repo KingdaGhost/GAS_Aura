@@ -38,8 +38,9 @@ class AURA_API ICombatInterface
 public:
 	virtual int32 GetPlayerLevel();
 
+	// The reason we pass in a GameplayTag is to be able to get a combatsocket location from either the weapon or Left and Right Hand
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	FVector GetCombatSocketLocation();
+	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateFacingTarget(const FVector& TargetLocation);
