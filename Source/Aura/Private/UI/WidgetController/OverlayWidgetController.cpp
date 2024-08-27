@@ -74,6 +74,7 @@ void UOverlayWidgetController::OnInitializedStartupAbilities(UAuraAbilitySystemC
 	//TODO: Get information about all given abilities, look up their Ability Info, and broadcast it to widgets
 	if (!AuraAbilitySystemComponent->bStartupAbilitiesGiven) return;
 
+	// The FForEachAbility is bounded here in this function by using the BindLambda function
 	FForEachAbility BroadcastDelegate;
 	BroadcastDelegate.BindLambda([this, AuraAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec)
 	{
@@ -82,6 +83,7 @@ void UOverlayWidgetController::OnInitializedStartupAbilities(UAuraAbilitySystemC
 		Info.InputTag = AuraAbilitySystemComponent->GetInputTagFromSpec(AbilitySpec);
 		AbilityInfoDelegate.Broadcast(Info);
 	});
+	// This line is used for calling the ForEachAbility() to execute the Delegate.
 	AuraAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
 }
 

@@ -64,6 +64,9 @@ void UAuraAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate
 	FScopedAbilityListLock ActiveScopeLock(*this);
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
+		// This is used for executing the FForEachAbility Delegate that was bounded in the OverlayWidgetController inside the OnInitializedStartupAbilities()
+		// This Delegate needs the AbilitySpec as its input parameter and so this AuraAbilitySystemComponent class has access to the ActivatableAbilities and by looping through the container
+		// We are able to bind each and every ability to the input dynamically.
 		if (!Delegate.ExecuteIfBound(AbilitySpec))
 		{
 			UE_LOG(LogAura, Error, TEXT("Failed to execute delegate in %hs"), __FUNCTION__);
@@ -96,6 +99,18 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 		}
 	}
 	return FGameplayTag();
+}
+
+void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
+{
+	Super::OnRep_ActivateAbilities();
+
+	// We only want to broadcast the first time. This will be false by default in clients
+	if (!bStartupAbilitiesGiven)
+	{
+		bStartupAbilitiesGiven = true;
+		AbilitiesGivenDelegate.Broadcast(this);
+	}
 }
 
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,

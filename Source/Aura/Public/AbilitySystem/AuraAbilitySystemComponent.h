@@ -31,6 +31,8 @@ public:
 	FAbilitiesGiven AbilitiesGivenDelegate;
 	bool bStartupAbilitiesGiven = false;
 protected:
+	//This is called when our ActivatableAbilities variable is replicated. This is done when we GiveAbility();
+	virtual void OnRep_ActivateAbilities() override;
 	UFUNCTION(Client, Reliable)
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 };
