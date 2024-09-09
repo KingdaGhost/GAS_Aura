@@ -95,6 +95,7 @@ void UOverlayWidgetController::OnInitializedStartupAbilities(UAuraAbilitySystemC
 
 void UOverlayWidgetController::OnXPChanged(int32 NewXP) const
 {
+	// CastChecked will be converted to static cast in the build game. So no problems with performance
 	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
 	if (AuraPlayerState)
 	{
@@ -109,9 +110,11 @@ void UOverlayWidgetController::OnXPChanged(int32 NewXP) const
 			const int32 LevelUpRequirement = LevelUpInfo->LevelUpInformation[Level].LevelUpRequirement;
 			const int32 PreviousLevelUpRequirement = LevelUpInfo->LevelUpInformation[Level - 1].LevelUpRequirement;
 
+			// suppose we are in level 2, LevelUpRequirement will be 900 and PreviousLevelUpRequirement will be 300, so Delta will be 900 - 300 = 600
 			const int32 DeltaLevelRequirement = LevelUpRequirement - PreviousLevelUpRequirement;
+			// XP for this level will be the current XP that we have which will be between 300 and 899. Lets take 500 as current XP and the PreviousLevelUpRequirement will be 300 which will be calculated to 500 - 300=200
 			const int32 XPForThisLevel = NewXP - PreviousLevelUpRequirement;
-
+			// So the XPBarPercent will be XPForThisLevel divided by DeltaRequirement, which will be calculated as 200/600 = 0.333..
 			const float XPBarPercent = static_cast<float>(XPForThisLevel) / static_cast<float>(DeltaLevelRequirement);
 
 			OnXPPercentChangedDelegate.Broadcast(XPBarPercent);
