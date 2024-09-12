@@ -30,7 +30,7 @@ public:
 	virtual AActor* GetCombatTarget_Implementation() const override;
 	/** Enemy Interface */
 	/** Combat Interface*/
-	virtual int32 GetPlayerLevel() override;
+	virtual int32 GetPlayerLevel_Implementation() override;
 	virtual void Die() override;
 	/** Combat Interface*/
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);

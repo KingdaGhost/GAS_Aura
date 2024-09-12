@@ -44,7 +44,8 @@ class AURA_API ICombatInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual int32 GetPlayerLevel();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	int32 GetPlayerLevel();
 
 	// The reason we pass in a GameplayTag is to be able to get a combatsocket location from either the weapon or Left and Right Hand
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
