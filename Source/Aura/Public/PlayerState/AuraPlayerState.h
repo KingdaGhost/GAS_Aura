@@ -11,7 +11,7 @@ class ULevelUpInfo;
 class UAuraAbilitySystemComponent;
 class UAttributeSet;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangedSignature, int32 /*StatValue*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangedDelegate, int32 /*StatValue*/);
 
 
 /**
@@ -34,8 +34,8 @@ public:
 	FORCEINLINE int32 GetPlayerLevel() const {return Level;}
 	FORCEINLINE int32 GetXP() const { return XP; }
 	
-	FOnPlayerStatChangedSignature OnXPChangedDelegate;
-	FOnPlayerStatChangedSignature OnLevelChangedDelegate;
+	FOnPlayerStatChangedDelegate OnXPChangedDelegate;
+	FOnPlayerStatChangedDelegate OnLevelChangedDelegate;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
