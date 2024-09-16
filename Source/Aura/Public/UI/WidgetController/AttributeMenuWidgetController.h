@@ -26,8 +26,23 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FAttributeInfoSignature AttributeInfoDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category="GAS|AttributePoints")
+	FOnPlayerStatChangedSignature AttributePointsChangedDelegate;
+	
+	UPROPERTY(BlueprintAssignable, Category="GAS|SpellPoints")
+	FOnPlayerStatChangedSignature SpellPointsChangedDelegate;
+
 protected:
 
+	void OnAttributePointsChanged(int32 NewAttributePoints);
+	void OnSpellPointsChanged(int32 NewSpellPoints);
+	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAttributeInfo> AttributeInfo;
+	
+	
 };
+
+
+
+
