@@ -37,6 +37,8 @@ public:
 	
 	FORCEINLINE int32 GetPlayerLevel() const {return Level;}
 	FORCEINLINE int32 GetXP() const { return XP; }
+	FORCEINLINE int32 GetAttributePoints() const { return AttributePoints; }
+	FORCEINLINE int32 GetSpellPoints() const { return SpellPoints; }
 	
 	FOnPlayerStatChangedDelegate OnXPChangedDelegate;
 	FOnPlayerStatChangedDelegate OnLevelChangedDelegate;

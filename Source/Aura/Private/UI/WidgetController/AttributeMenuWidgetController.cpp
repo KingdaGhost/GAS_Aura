@@ -39,6 +39,11 @@ void UAttributeMenuWidgetController::BroadcastInitialValue()
 	{
 		BroadcastAttributeInfo(AttrInfo.AttributeTag);
 	}
+	if (const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState))
+	{
+		AttributePointsChangedDelegate.Broadcast(AuraPlayerState->GetAttributePoints());
+		SpellPointsChangedDelegate.Broadcast(AuraPlayerState->GetSpellPoints());
+	}
 }
 
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag) const
