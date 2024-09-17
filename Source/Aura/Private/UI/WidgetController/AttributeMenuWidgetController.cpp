@@ -4,6 +4,7 @@
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/AttributeInfo.h"
 #include "PlayerState/AuraPlayerState.h"
@@ -51,6 +52,13 @@ void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& 
 	FAuraAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(AttributeTag);
 	Info.AttributeValue = Info.AttributeGetter.GetNumericValue(CastChecked<UAuraAttributeSet>(AttributeSet));
 	AttributeInfoDelegate.Broadcast(Info);
+}
+
+void UAttributeMenuWidgetController::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+	// Just need to call UpgradeAttribute() from AuraASC from here
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	AuraASC->UpgradeAttribute(AttributeTag);
 }
 
 void UAttributeMenuWidgetController::OnAttributePointsChanged(int32 NewAttributePoints)

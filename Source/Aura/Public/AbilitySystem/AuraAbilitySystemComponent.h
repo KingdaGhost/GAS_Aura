@@ -24,6 +24,8 @@ public:
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	void ForEachAbility(const FForEachAbility& Delegate);
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);
+	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);
 	//Marking them static means making them as utility function
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
