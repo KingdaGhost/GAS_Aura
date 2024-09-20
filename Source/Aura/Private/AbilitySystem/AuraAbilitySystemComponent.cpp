@@ -105,6 +105,7 @@ void UAuraAbilitySystemComponent::ServerUpgradeAttribute(const FGameplayTag& Att
 	Payload.EventTag = AttributeTag;
 	Payload.EventMagnitude = 1.f;
 
+	// This will be called only when we click on the + button on the Attributes Menu for a particular primary attribute
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), AttributeTag, Payload);
 
 	// Decrementing 1 attribute points after sending gameplay event to Actor
