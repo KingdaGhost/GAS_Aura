@@ -11,19 +11,14 @@
 
 void UOverlayWidgetController::BroadcastInitialValue()
 {
-	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
-
-	OnHealthChanged.Broadcast(AuraAttributeSet->GetHealth());
-	OnMaxHealthChanged.Broadcast(AuraAttributeSet->GetMaxHealth());
-	OnManaChanged.Broadcast(AuraAttributeSet->GetMana());
-	OnMaxManaChanged.Broadcast(AuraAttributeSet->GetMaxMana());
+	OnHealthChanged.Broadcast(GetAuraAS()->GetHealth());
+	OnMaxHealthChanged.Broadcast(GetAuraAS()->GetMaxHealth());
+	OnManaChanged.Broadcast(GetAuraAS()->GetMana());
+	OnMaxManaChanged.Broadcast(GetAuraAS()->GetMaxMana());
 }
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
-	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
-	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
-
 	#define BIND_CALLBACK( AttributeName ) AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->Get##AttributeName##Attribute()).AddLambda( \
 		[this](const FOnAttributeChangeData& Data) \
 		{\
@@ -35,22 +30,21 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		BIND_CALLBACK(Mana);
 		BIND_CALLBACK(MaxMana);
 	#undef BIND_CALLBACK
-
-	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
-	if (AuraASC)
+	
+	if (GetAuraASC())
 	{
 		// if BindCallbacksToDependencies function gets called first then we will go to the else statement since the AuraASC will have not been initialised yet or the AddCharacterAbilities would have not been called yet
 		// if AbilitiesGivenDelegate has already broadcasted from AuraASC then just call the callback itself 
-		if (AuraASC->bStartupAbilitiesGiven)
+		if (GetAuraASC()->bStartupAbilitiesGiven)
 		{
-			OnInitializedStartupAbilities(AuraASC);
+			BroadcastAbilityInfo();
 		}
 		else
 		{ // else we bind the callback to the OnInitializedStartupAbilities and will be called automatically when the Delegate has been broadcasted
-			AuraASC->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializedStartupAbilities);
+			GetAuraASC()->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastAbilityInfo);
 		}
 
-		AuraASC->EffectAssetTags.AddLambda(
+		GetAuraASC()->EffectAssetTags.AddLambda(
 		// The square brackets is used for capturing the object that which we can use its member function. In this case, we want to use GetDataTableRowByTag which is a member function of this class so we use the 'this' keyword
 		[this](const FGameplayTagContainer& AssetTags)
 			{
@@ -81,31 +75,12 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	}
 }
 
-void UOverlayWidgetController::OnInitializedStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent)
-{
-	//Get information about all given abilities, look up their Ability Info, and broadcast it to widgets
-	if (!AuraAbilitySystemComponent->bStartupAbilitiesGiven) return;
-
-	// The FForEachAbility is bounded here in this function by using the BindLambda function
-	FForEachAbility BroadcastDelegate;
-	BroadcastDelegate.BindLambda([this, AuraAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec)
-	{
-		//Need a way to figure out the ability tag for a given ability spec.
-		FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AuraAbilitySystemComponent->GetAbilityTagFromSpec(AbilitySpec));
-		Info.InputTag = AuraAbilitySystemComponent->GetInputTagFromSpec(AbilitySpec);
-		AbilityInfoDelegate.Broadcast(Info);
-	});
-	// This line is used for calling the ForEachAbility() to execute the Delegate.
-	AuraAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
-}
-
-void UOverlayWidgetController::OnXPChanged(int32 NewXP) const
+void UOverlayWidgetController::OnXPChanged(int32 NewXP)
 {
 	// CastChecked will be converted to static cast in the build game. So no problems with performance
-	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
-	if (AuraPlayerState)
+	if (GetAuraPS())
 	{
-		const ULevelUpInfo* LevelUpInfo = AuraPlayerState->LevelUpInfo;
+		const ULevelUpInfo* LevelUpInfo = GetAuraPS()->LevelUpInfo;
 		checkf(LevelUpInfo, TEXT("Unable to find LevelUpInfo. Please fill out AuraPlayerState Blueprint"));
 
 		const int32 Level = LevelUpInfo->FindLevelForXP(NewXP);

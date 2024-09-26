@@ -22,12 +22,11 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 			}
 		);
 	}
-
-	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
-	if (AuraPlayerState)
+	
+	if (GetAuraPS())
 	{
-		AuraPlayerState->OnAttributePointsChangedDelegate.AddUObject(this, &UAttributeMenuWidgetController::OnAttributePointsChanged);
-		AuraPlayerState->OnSpellPointsChangedDelegate.AddUObject(this, &UAttributeMenuWidgetController::OnSpellPointsChanged);
+		GetAuraPS()->OnAttributePointsChangedDelegate.AddUObject(this, &UAttributeMenuWidgetController::OnAttributePointsChanged);
+		GetAuraPS()->OnSpellPointsChangedDelegate.AddUObject(this, &UAttributeMenuWidgetController::OnSpellPointsChanged);
 	}
 }
 
@@ -40,10 +39,10 @@ void UAttributeMenuWidgetController::BroadcastInitialValue()
 	{
 		BroadcastAttributeInfo(AttrInfo.AttributeTag);
 	}
-	if (const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState))
+	if (GetAuraPS())
 	{
-		AttributePointsChangedDelegate.Broadcast(AuraPlayerState->GetAttributePoints());
-		SpellPointsChangedDelegate.Broadcast(AuraPlayerState->GetSpellPoints());
+		AttributePointsChangedDelegate.Broadcast(GetAuraPS()->GetAttributePoints());
+		SpellPointsChangedDelegate.Broadcast(GetAuraPS()->GetSpellPoints());
 	}
 }
 
@@ -57,8 +56,7 @@ void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& 
 void UAttributeMenuWidgetController::UpgradeAttribute(const FGameplayTag& AttributeTag)
 {
 	// Just need to call UpgradeAttribute() from AuraASC from here
-	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
-	AuraASC->UpgradeAttribute(AttributeTag);
+	GetAuraASC()->UpgradeAttribute(AttributeTag);
 }
 
 void UAttributeMenuWidgetController::OnAttributePointsChanged(int32 NewAttributePoints)
