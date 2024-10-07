@@ -63,10 +63,10 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		);
 	}
 	
-	if (AuraPlayerState)
+	if (GetAuraPS())
 	{
-		AuraPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
-		AuraPlayerState->OnLevelChangedDelegate.AddLambda(
+		GetAuraPS()->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
+		GetAuraPS()->OnLevelChangedDelegate.AddLambda(
 			[this](int32 NewLevel)
 			{
 				OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
