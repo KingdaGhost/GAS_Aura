@@ -27,6 +27,8 @@ public:
 	void OnSpellPointsChanged(int32 NewSpellPoints);
 	UFUNCTION(BlueprintCallable)
 	void SpellGlobeSelected(const FGameplayTag& AbilityTag);
+	UFUNCTION(BlueprintCallable)
+	void SpendPointButtonPressed();
 	
 	UPROPERTY(BlueprintAssignable, Category="GAS|SpellPoints")
 	FOnPlayerStatChangedSignature SpellPointsChangedDelegate;
