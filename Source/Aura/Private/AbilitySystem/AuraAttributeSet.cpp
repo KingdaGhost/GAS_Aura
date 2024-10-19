@@ -163,7 +163,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		// Source Character  is the owner, since GA_ListenForEvents applies GE_EventBasedEffect, adding to IncomingXP
 		if (Props.SourceCharacter->Implements<UPlayerInterface>() && Props.SourceCharacter->Implements<UCombatInterface>())
 		{
-			const int32 CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter);
+			int32 CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter);
 			const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
 
 			// Level must be total XP
@@ -171,18 +171,26 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const int32 NumLevelUps = NewLevel - CurrentLevel;
 			if (NumLevelUps > 0)
 			{
-				// GetAttributePointsReward()
-				const int32 AttributePointsReward = IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
-				// GetSpellPointsReward()
-				const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel);
-				// AddToPlayerlevel()
+				// We need to do this so that when we level up multiple times at once, we would be able to get all the points that needs to be rewarded to us one level at a time
+				// Else we would only get only one point for many level ups at once
+				for (int32 LevelUp = 1; LevelUp <= NumLevelUps; LevelUp++)
+				{
+					// GetAttributePointsReward()
+					const int32 AttributePointsReward = IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
+					// GetSpellPointsReward()
+					const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel);
+					// AddToAttributePoints() and AddToSpellPoints()
+					IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
+					IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
+					// This is to make sure that we get to get the points for all levels up until the expected level. Example if the NumLevelUps is 3 then the CurrentLevel will be increased 3 times each time adding to the points from its level
+					CurrentLevel++;
+				}
+				// AddToPlayerlevel() This needs to be done only once as the NumLevelUps has already been calculated at once
 				IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
-				// AddToAttributePoints() and AddToSpellPoints()
-				IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
-				IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
 				// Fill up Health and Mana
 				bTopOffHealth = true;
 				bTopOffMana = true;
+				// This is just the effect of leveling up so no need for multiple effects
 				IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
 			}
 			// This part here is to change the XP Bar on the HUD
