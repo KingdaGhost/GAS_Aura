@@ -7,12 +7,9 @@
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
-#include "Aura/AuraLogChannels.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
-#include "Kismet/GameplayStatics.h"
-#include "Misc/ICompressionFormat.h"
 #include "Net/UnrealNetwork.h"
 #include "PlayerController/AuraPlayerController.h"
 
@@ -172,7 +169,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			if (NumLevelUps > 0)
 			{
 				// We need to do this so that when we level up multiple times at once, we would be able to get all the points that needs to be rewarded to us one level at a time
-				// Else we would only get only one point for many level ups at once
+				// Else we would only get one point for many level ups at once
 				for (int32 LevelUp = 1; LevelUp <= NumLevelUps; LevelUp++)
 				{
 					// GetAttributePointsReward()
@@ -185,7 +182,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 					// This is to make sure that we get to get the points for all levels up until the expected level. Example if the NumLevelUps is 3 then the CurrentLevel will be increased 3 times each time adding to the points from its level
 					CurrentLevel++;
 				}
-				// AddToPlayerlevel() This needs to be done only once as the NumLevelUps has already been calculated at once
+				// AddToPlayerLevel() This needs to be done only once as the NumLevelUps has already been calculated at once
 				IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
 				// Fill up Health and Mana
 				bTopOffHealth = true;
