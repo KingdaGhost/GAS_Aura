@@ -34,6 +34,10 @@ public:
 	void GlobeDeselect();
 	UFUNCTION(BlueprintCallable)
 	void EquipButtonPressed();
+	//SlotTag is the InputTag and AbilityType is either offensive or passive
+	UFUNCTION(BlueprintCallable)
+	void SpellRowGlobePressed(const FGameplayTag& SlotTag, const FGameplayTag& AbilityType);
+	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlot);
 	
 	UPROPERTY(BlueprintAssignable, Category="GAS|SpellPoints")
 	FOnPlayerStatChangedSignature SpellPointsChangedDelegate;
@@ -52,8 +56,9 @@ private:
 
 	FSelectedAbility SelectedAbility = { FAuraGameplayTags::Get().Abilities_None, FAuraGameplayTags::Get().Abilities_Status_Locked};
 	int32 CurrentSpellPoints = 0;
-
 	bool bWaitingForEquipSelection = false;
+	// The SelectedSlot is associated with InputTag since the AbilityIcons in the SpellMenu known for their InputTag
+	FGameplayTag SelectedSlot;
 };
 
 
