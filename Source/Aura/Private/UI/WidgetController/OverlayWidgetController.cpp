@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/OverlayWidgetController.h"
 
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
@@ -61,6 +62,8 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 				}
 			}
 		);
+		// Binding to the AbilityEquipped which gets called when we select an ability and assign it to an offensive or passive slot
+		GetAuraASC()->AbilityEquipped.AddUObject(this, &UOverlayWidgetController::OnAbilityEquipped);
 	}
 	
 	if (GetAuraPS())
@@ -73,6 +76,28 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 			}
 			);
 	}
+}
+
+void UOverlayWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status,
+	const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlot) const
+{
+	const FAuraGameplayTags& AuraGameplayTags = FAuraGameplayTags::Get();
+	
+	// Clearing out the old slot
+	// Using the PreviousSlot which means the PreviousInputTag, e.g, firebolt in input LMB now changed to RMB then the PreviousSlot will be LMB, will set everything to default values
+	// Even the icons and such will be set to null. So make sure to handle on the blueprint side to not set a blank white image on the icon.
+	FAuraAbilityInfo LastSlotInfo;
+	LastSlotInfo.StatusTag = AuraGameplayTags.Abilities_Status_Unlocked;
+	LastSlotInfo.InputTag = PreviousSlot;
+	LastSlotInfo.AbilityTag = AuraGameplayTags.Abilities_None;
+	// Broadcast empty info if PreviousSlot is a valid Slot. Only if equipping an already equipped spell
+	AbilityInfoDelegate.Broadcast(LastSlotInfo);
+
+	// Filling out the new slot
+	FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+	Info.StatusTag = Status;
+	Info.InputTag = SlotTag;
+	AbilityInfoDelegate.Broadcast(Info);
 }
 
 void UOverlayWidgetController::OnXPChanged(int32 NewXP)
