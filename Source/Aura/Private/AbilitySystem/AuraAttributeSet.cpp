@@ -116,83 +116,103 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	// The IncomingDamageAttribute is set only on the server since it is a meta attribute and does not replicate
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		const float LocalIncomingDamage = GetIncomingDamage();
-		SetIncomingDamage(0.f);
-		if (LocalIncomingDamage > 0)
-		{
-			const float NewHealth = GetHealth() - LocalIncomingDamage;
-			SetHealth(FMath::Clamp(NewHealth, 0, GetMaxHealth()));
-
-			const bool bFatal = NewHealth <= 0.f;
-			if (bFatal)
-			{
-				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
-				if (CombatInterface)
-				{
-					CombatInterface->Die();
-				}
-				SendXPEvent(Props);
-			}
-			else
-			{
-				FGameplayTagContainer TagContainer;
-				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-				// Props.TargetASC is the owner of this attribute set, the thing being affected
-				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-			}
-			
-			const bool bBlock = UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
-			const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
-
-			FString Message = FString();
-			if (bBlock && bCriticalHit) Message = FString("Blocked Critical Hit!");
-			else if (bBlock) Message = FString("Blocked!");
-			else if (bCriticalHit) Message = FString("Critical Hit!");
-			
-			ShowFloatingText(Props, LocalIncomingDamage, bBlock, bCriticalHit, FText::FromString(Message));
-		}
+		HandleIncomingDamage(Props);		
 	}
 	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
 	{
-		const float LocalIncomingXP = GetIncomingXP();
-		SetIncomingXP(0.f);
+		HandleIncomingXP(Props);
+	}
+}
 
-		// Source Character  is the owner, since GA_ListenForEvents applies GE_EventBasedEffect, adding to IncomingXP
-		if (Props.SourceCharacter->Implements<UPlayerInterface>() && Props.SourceCharacter->Implements<UCombatInterface>())
+void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
+{
+	const float LocalIncomingDamage = GetIncomingDamage();
+	SetIncomingDamage(0.f);
+	if (LocalIncomingDamage > 0)
+	{
+		const float NewHealth = GetHealth() - LocalIncomingDamage;
+		SetHealth(FMath::Clamp(NewHealth, 0, GetMaxHealth()));
+
+		const bool bFatal = NewHealth <= 0.f;
+		if (bFatal)
 		{
-			int32 CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter);
-			const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
-
-			// Level must be total XP
-			const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
-			const int32 NumLevelUps = NewLevel - CurrentLevel;
-			if (NumLevelUps > 0)
+			ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+			if (CombatInterface)
 			{
-				// We need to do this so that when we level up multiple times at once, we would be able to get all the points that needs to be rewarded to us one level at a time
-				// Else we would only get one point for many level ups at once
-				for (int32 LevelUp = 1; LevelUp <= NumLevelUps; LevelUp++)
-				{
-					// GetAttributePointsReward()
-					const int32 AttributePointsReward = IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
-					// GetSpellPointsReward()
-					const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel);
-					// AddToAttributePoints() and AddToSpellPoints()
-					IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
-					IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
-					// This is to make sure that we get to get the points for all levels up until the expected level. Example if the NumLevelUps is 3 then the CurrentLevel will be increased 3 times each time adding to the points from its level
-					CurrentLevel++;
-				}
-				// AddToPlayerLevel() This needs to be done only once as the NumLevelUps has already been calculated at once
-				IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
-				// Fill up Health and Mana
-				bTopOffHealth = true;
-				bTopOffMana = true;
-				// This is just the effect of leveling up so no need for multiple effects
-				IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
+				CombatInterface->Die();
 			}
-			// This part here is to change the XP Bar on the HUD
-			IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
+			SendXPEvent(Props);
 		}
+		else
+		{
+			FGameplayTagContainer TagContainer;
+			TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+			// Props.TargetASC is the owner of this attribute set, the thing being affected
+			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+		}
+			
+		const bool bBlock = UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
+		const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
+
+		FString Message = FString();
+		if (bBlock && bCriticalHit) Message = FString("Blocked Critical Hit!");
+		else if (bBlock) Message = FString("Blocked!");
+		else if (bCriticalHit) Message = FString("Critical Hit!");
+			
+		ShowFloatingText(Props, LocalIncomingDamage, bBlock, bCriticalHit, FText::FromString(Message));
+
+		if (UAuraAbilitySystemLibrary::IsSuccessfulDebuff(Props.EffectContextHandle))
+		{
+				Debuff(Props);
+		}
+	}
+}
+
+void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
+{
+	
+}
+
+void UAuraAttributeSet::HandleIncomingXP(const FEffectProperties& Props)
+{
+	const float LocalIncomingXP = GetIncomingXP();
+	SetIncomingXP(0.f);
+
+	// Source Character  is the owner, since GA_ListenForEvents applies GE_EventBasedEffect, adding to IncomingXP
+	if (Props.SourceCharacter->Implements<UPlayerInterface>() && Props.SourceCharacter->Implements<UCombatInterface>())
+	{
+		int32 CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter);
+		const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
+
+		// Level must be total XP
+		const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
+		const int32 NumLevelUps = NewLevel - CurrentLevel;
+		if (NumLevelUps > 0)
+		{
+			// We need to do this so that when we level up multiple times at once, we would be able to get all the points that needs to be rewarded to us one level at a time
+			// Else we would only get one point for many level ups at once
+			for (int32 LevelUp = 1; LevelUp <= NumLevelUps; LevelUp++)
+			{
+				// GetAttributePointsReward()
+				const int32 AttributePointsReward = IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
+				// GetSpellPointsReward()
+				const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel);
+				// AddToAttributePoints() and AddToSpellPoints()
+				IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
+				IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
+				// This is to make sure that we get to get the points for all levels up until the expected level. Example if the NumLevelUps is 3 then the CurrentLevel will be increased 3 times each time adding to the points from its level
+				CurrentLevel++;
+			}
+			// AddToPlayerLevel() This needs to be done only once as the NumLevelUps has already been calculated at once
+			IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
+			// Fill up Health and Mana
+			bTopOffHealth = true;
+			bTopOffMana = true;
+			// This is just the effect of leveling up so no need for multiple effects
+			IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
+		}
+		// This part here is to change the XP Bar on the HUD
+		IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
 	}
 }
 
