@@ -194,8 +194,8 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	// Effect->InheritableOwnedTagsContainer.AddTag(GameplayTags.DamageTypeToDebuffs[DamageType]); // Deprecated
 	// This is just for setting up Tag for a GameplayEffect
 	FInheritedTagContainer TagContainer = FInheritedTagContainer();
-	TagContainer.AddTag(GameplayTags.DamageTypeToDebuffs[DamageType]);
 	UTargetTagsGameplayEffectComponent& Component = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
+	TagContainer.Added.AddTag(GameplayTags.DamageTypeToDebuffs[DamageType]);
 	Component.SetAndApplyTargetTagChanges(TagContainer);
 
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;

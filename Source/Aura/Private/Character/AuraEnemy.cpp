@@ -99,6 +99,7 @@ void AAuraEnemy::InitAbilityActorInfo()
 	{
 		InitializeDefaultAttributes();
 	}
+	OnASCRegistered.Broadcast(AbilitySystemComponent); // This is to bind the delegate in the DebuffNiagaraComponent
 }
 
 void AAuraEnemy::InitializeDefaultAttributes() const

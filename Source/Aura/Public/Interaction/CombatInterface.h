@@ -8,6 +8,9 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, AActor*, DeadActor);
+
 class UNiagaraSystem;
 USTRUCT(BlueprintType)
 struct FTaggedMontage
@@ -82,4 +85,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	ECharacterClass GetCharacterClass() const;
+
+	// This is a pure virtual function since we set it to zero. Anything that implements this will have to override this
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;
+
+	virtual FOnDeath GetOnDeathDelegate() = 0;
 };

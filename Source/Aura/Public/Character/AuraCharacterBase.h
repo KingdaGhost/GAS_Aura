@@ -9,6 +9,7 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UDebuffNiagaraComponent;
 class UNiagaraSystem;
 class UMotionWarpingComponent;
 class UGameplayAbility;
@@ -40,12 +41,17 @@ public:
 	virtual int32 GetMinionCount_Implementation() override;
 	virtual void IncrementMinionCount_Implementation(int32 Amount) override;
 	virtual ECharacterClass GetCharacterClass_Implementation() const override;
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
+	virtual FOnDeath GetOnDeathDelegate() override;
 	/* CombatInterface */
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;
+	
+	FOnASCRegistered OnASCRegistered;
+	FOnDeath OnDeath;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -110,6 +116,9 @@ protected:
 	/* Minion */
 
 	int32 MinionCount = 0;
+
+	UPROPERTY(VisibleAnywhere, Category = "Debuff")
+	TObjectPtr<UDebuffNiagaraComponent> BurnDebuffComponent;
 private:
 	virtual void InitAbilityActorInfo();
 
