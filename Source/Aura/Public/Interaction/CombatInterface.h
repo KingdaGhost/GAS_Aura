@@ -60,7 +60,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable) //BlueprintNativeEvent is going to automatically generate a virtual native version that exists in c++ that we can override
 	UAnimMontage* GetHitReactMontage();
 	
-	virtual void Die() = 0;
+	virtual void Die(const FVector& InDeathImpulse) = 0;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool IsDead() const;
@@ -90,4 +90,5 @@ public:
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;
 
 	virtual FOnDeath GetOnDeathDelegate() = 0;
+
 };

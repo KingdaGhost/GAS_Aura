@@ -61,26 +61,30 @@ void AAuraProjectile::BeginPlay()
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
-	if (SourceAvatarActor == OtherActor) return;
-	// if the firstactor and second actor has the same tag then friends will be true and it will return false and thus will be true in the below if check
-	if(!UAuraAbilitySystemLibrary::IsNotFriend(OtherActor, SourceAvatarActor)) return;
-	if (!bHit) OnHit();
-	
-	if (HasAuthority())
+	if (DamageEffectParams.SourceAbilitySystemComponent && DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor())
 	{
-		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
-		{	// DamageEffectParams is already set in the AuraProjectileSpell when Projectile is Spawn and the remaining will be set here when there is an overlap
-			const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
-			DamageEffectParams.DeathImpulse = DeathImpulse;
-			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
-			UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
-		}
+		AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+		if (SourceAvatarActor == OtherActor) return;
+		// if the firstactor and second actor has the same tag then friends will be true and it will return false and thus will be true in the below if check
+		if(!UAuraAbilitySystemLibrary::IsNotFriend(OtherActor, SourceAvatarActor)) return;
+		if (!bHit) OnHit();
+	
+		if (HasAuthority())
+		{
+			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+			{	// DamageEffectParams is already set in the AuraProjectileSpell when Projectile is Spawn and the remaining will be set here when there is an overlap
+				const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
+				DamageEffectParams.DeathImpulse = DeathImpulse;
+				DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+				UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
+			}
 		
-		Destroy();
+			Destroy();
+		}
+		// This else part is for clients only. Getting to this part means that PlaySound and SpawnSystem has been done
+		else	bHit = true;
 	}
-	// This else part is for clients only. Getting to this part means that PlaySound and SpawnSystem has been done
-	else	bHit = true;
+	
 }
 
 

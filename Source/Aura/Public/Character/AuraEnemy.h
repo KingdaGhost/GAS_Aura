@@ -31,7 +31,7 @@ public:
 	/** Enemy Interface */
 	/** Combat Interface*/
 	virtual int32 GetPlayerLevel_Implementation() override;
-	virtual void Die() override;
+	virtual void Die(const FVector& InDeathImpulse) override;
 	/** Combat Interface*/
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
