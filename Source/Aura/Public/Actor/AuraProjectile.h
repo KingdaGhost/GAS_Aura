@@ -23,7 +23,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-	FDamageEffectParams DamageEffectParams;
+	FDamageEffectParams DamageEffectParams; // This will be filled in the AuraProjectileSpell first when we spawn the projectile
 	
 protected:
 	virtual void BeginPlay() override;
