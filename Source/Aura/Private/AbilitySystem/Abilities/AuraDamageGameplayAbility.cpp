@@ -30,6 +30,17 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	Params.DebuffDuration = DebuffDuration;
 	Params.DebuffFrequency = DebuffFrequency;
 	Params.DeathImpulseMagnitude = DeathImpulseMagnitude;
+	Params.KnockbackForceMagnitude = KnockbackForceMagnitude;
+	Params.KnockbackChance = KnockbackChance;
+	// This is for AIs. For the player/Aura, this is overriden in AuraProjectile and mostly the TargetActor will be null
+	if (IsValid(TargetActor))
+	{
+		FRotator Rotation = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
+		Rotation.Pitch = 45.f;
+		FVector ToTarget = Rotation.Vector();
+		Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;
+		Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;
+	}
 	return Params;	
 }
 

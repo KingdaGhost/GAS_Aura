@@ -65,7 +65,7 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	{
 		AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
 		if (SourceAvatarActor == OtherActor) return;
-		// if the firstactor and second actor has the same tag then friends will be true and it will return false and thus will be true in the below if check
+		// if the firstactor and second actor has the same tag then friends will be true, and it will return false and thus will be true in the below if check
 		if(!UAuraAbilitySystemLibrary::IsNotFriend(OtherActor, SourceAvatarActor)) return;
 		if (!bHit) OnHit();
 	
@@ -73,6 +73,16 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		{
 			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{	// DamageEffectParams is already set in the AuraProjectileSpell when Projectile is Spawn and the remaining will be set here when there is an overlap
+				const bool bKnockback = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
+				if (bKnockback)
+				{
+					// const FVector KnockbackDirection = GetActorForwardVector().RotateAngleAxis(45.f, GetActorRightVector()); // This is the same as the below three lines
+					FRotator Rotation = (OtherActor->GetActorLocation() - SourceAvatarActor->GetActorLocation()).Rotation();
+					Rotation.Pitch = 45.f;
+					const FVector KnockbackDirection = Rotation.Vector();
+					const FVector KnockbackForce = KnockbackDirection * DamageEffectParams.KnockbackForceMagnitude;
+					DamageEffectParams.KnockbackForce = KnockbackForce;
+				}
 				const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
 				DamageEffectParams.DeathImpulse = DeathImpulse;
 				DamageEffectParams.TargetAbilitySystemComponent = TargetASC;

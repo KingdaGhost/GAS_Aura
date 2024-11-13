@@ -8,6 +8,7 @@
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
@@ -138,12 +139,11 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		SetHealth(FMath::Clamp(NewHealth, 0, GetMaxHealth()));
 
 		const bool bFatal = NewHealth <= 0.f;
+		ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
 		if (bFatal)
-		{
-			ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+		{			
 			if (CombatInterface)
 			{
-				FVector DeathImpulse = UAuraAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle);
 				CombatInterface->Die(UAuraAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle));
 			}
 			SendXPEvent(Props);
@@ -154,6 +154,15 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 			TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
 			// Props.TargetASC is the owner of this attribute set, the thing being affected
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			
+			const FVector& KnockbackForce = UAuraAbilitySystemLibrary::GetKnockbackForce(Props.EffectContextHandle);
+			if (!KnockbackForce.IsNearlyZero(1.f))
+			{
+				// We need to stop movement because when an enemy gets hit and it moves towards the player the knockback only sends the enemy upwards but not backwards. So we stop movement temporarily.
+				Props.TargetCharacter->GetCharacterMovement()->StopMovementImmediately();
+				Props.TargetCharacter->LaunchCharacter(KnockbackForce, true, true);
+				// After getting knocked backwards, the enemy will move again using the Behavior Tree
+			}
 		}
 			
 		const bool bBlock = UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
