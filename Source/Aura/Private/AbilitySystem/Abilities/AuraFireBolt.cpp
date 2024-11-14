@@ -25,9 +25,10 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 			// Description
 			"<Default>Launches a bolt of fire, "
 			"exploding on impact and dealing </><Damage>%d </><Default>"
-			"fire damage with a chance to burn</>"),
+			"fire damage with a </><Percent>%.0f%%</><Default> chance to burn "
+			 "and a </><Percent>%.0f%%</><Default> chance to knockback enemies</>"),
 			// Values
-			Level, ManaCost, Cooldown, ScaledDamage);
+			Level, ManaCost, Cooldown, ScaledDamage, DebuffChance, KnockbackChance);
 	}
 	return FString::Printf(TEXT(
 		// Title
@@ -39,9 +40,10 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 		// Description
 		"<Default>Launches %d bolts of fire, "
 		"exploding on impact and dealing </><Damage>%d </><Default>"
-		"fire damage with a chance to burn</>"),
+		"fire damage with a </><Percent>%.0f%%</><Default> chance to burn "
+		"and a </><Percent>%.0f%%</><Default> chance to knockback enemies</>"),
 		// Values
-		Level, ManaCost, Cooldown, FMath::Min(Level, NumProjectiles), ScaledDamage);
+		Level, ManaCost, Cooldown, FMath::Min(Level, NumProjectiles), ScaledDamage, DebuffChance, KnockbackChance);
 	
 }
 
@@ -59,9 +61,10 @@ FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 		"<Small>Cooldown: </><Cooldown>%.1f</>\n\n"
 		// Description
 		"<Default>Launches %d bolts of fire, exploding on impact and dealing "
-		"</><Damage>%d </><Default>fire damage with a chance to burn</>"),
+		"</><Damage>%d </><Default>fire damage with a </><Percent>%.0f%%</><Default> chance to burn"
+		"and a </><Percent>%.0f%%</><Default> chance to knockback enemies</>"),
 		// Values
-		Level, ManaCost, Cooldown, FMath::Min(Level, NumProjectiles), ScaledDamage);
+		Level, ManaCost, Cooldown, FMath::Min(Level, NumProjectiles), ScaledDamage, DebuffChance, KnockbackChance);
 }
 
 void UAuraFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag,
