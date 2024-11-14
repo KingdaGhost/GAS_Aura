@@ -24,6 +24,9 @@ public:
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FDamageEffectParams DamageEffectParams; // This will be filled in the AuraProjectileSpell first when we spawn the projectile
+
+	UPROPERTY()
+	TObjectPtr<USceneComponent> HomingTargetSceneComponent;
 	
 protected:
 	virtual void BeginPlay() override;
