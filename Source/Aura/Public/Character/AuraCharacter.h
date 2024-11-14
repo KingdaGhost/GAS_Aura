@@ -45,6 +45,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool bInShockLoop = false;
+
 private:
 	virtual void InitAbilityActorInfo() override;
 	

@@ -38,7 +38,11 @@ void AAuraProjectile::OnHit()
 {
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-	if(LoopingSoundComponent) LoopingSoundComponent->Stop();
+	if(LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
 	bHit = true;
 }
 
@@ -46,6 +50,11 @@ void AAuraProjectile::Destroyed()
 {
 	//This is for clients who did not get a chance to enter OnSphereOverlap() due to destroy function getting called before spawning impacts
 	if (!bHit && !HasAuthority()) OnHit();
+	if(LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
 	Super::Destroyed();
 }
 
