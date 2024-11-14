@@ -3,8 +3,9 @@
 
 #include "AbilitySystem/Abilities/AuraFireBolt.h"
 
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 FString UAuraFireBolt::GetDescription(int32 Level)
 {
@@ -76,41 +77,26 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, co
 	}
 
 	const FVector Forward = Rotation.Vector();
-	const FVector LeftOfSpread = Forward.RotateAngleAxis(-ProjectileSpread / 2.f, FVector::UpVector);
-	const FVector RightOfSpread = Forward.RotateAngleAxis(ProjectileSpread / 2.f, FVector::UpVector);
+	
+	TArray<FRotator> Rotations = UAuraAbilitySystemLibrary::EvenlySpacedRotators(Forward, FVector::UpVector, ProjectileSpread, NumProjectiles);
 
-	// NumProjectiles = FMath::Min(MaxNumProjectiles, GetAbilityLevel());
-	if (NumProjectiles > 1)
+	for (const FRotator& Rot : Rotations)
 	{
-		// if we divide directly by NumProjectiles there will be problems. Eg, if we have 2 projectiles then, the first one will start at LeftOfSpread since the angle starts at 0 but the next one will be at 45 since we divide the spread by 2
-		// which we do not want, but instead we want it at the RightOfSpread which is 90 degrees. So we have to divide the spread by Number of Projectiles less by one (1), which will give 90 for the second one.
-		const float DeltaSpread = ProjectileSpread / (NumProjectiles - 1);
-		for (int32 i = 0; i < NumProjectiles; i++)
-		{
-			const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
-			const FVector Start = SocketLocation + FVector(0,0, 5); // Just to raise it above 10 units
-			UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(),
-				Start,
-				 Start + Direction * 100.f,
-				5,
-				FLinearColor::Red,
-				120,
-				1);		
-		}
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(SocketLocation);
+		SpawnTransform.SetRotation(Rot.Quaternion());
+
+		// SpawnActorDeferred is for spawning an actor in the world when all the things that need to be attached to it has been set.
+		// In this case, the gameplay ability spec for damage is set before we spawn the projectile and by calling FinishSpawning on the projectile, we conclude that everything is in order and for it to be spawn to the world
+		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+			ProjectileClass,
+			SpawnTransform,
+			GetOwningActorFromActorInfo(),
+			Cast<APawn>(GetOwningActorFromActorInfo()),
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	
+		Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults();
+		Projectile->FinishSpawning(SpawnTransform);
 	}
-	else
-	{
-		// Single Projectile
-		const FVector Start = SocketLocation + FVector(0,0, 5); // Just to raise it above 10 units
-		UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(),
-				Start,
-				 Start + Forward * 100.f,
-				5,
-				FLinearColor::Red,
-				120,
-				1);	
-	}
-	UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), SocketLocation, SocketLocation + Forward * 100.f, 5, FLinearColor::White, 120, 1);
-	UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), SocketLocation, SocketLocation + LeftOfSpread * 100.f, 5, FLinearColor::Gray, 120, 1);
-	UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), SocketLocation, SocketLocation + RightOfSpread * 100.f, 5, FLinearColor::Gray, 120, 1);
+	
 }

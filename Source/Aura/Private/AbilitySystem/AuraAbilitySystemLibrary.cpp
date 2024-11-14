@@ -353,3 +353,51 @@ int32 UAuraAbilitySystemLibrary::GetXPRewardForClassAndLevel(const UObject* Worl
 
 	return static_cast<int32>(XPReward);
 }
+
+TArray<FRotator> UAuraAbilitySystemLibrary::EvenlySpacedRotators(const FVector& Forward, const FVector& Axis, float Spread, int32 NumRotators)
+{
+	TArray<FRotator> Rotators;
+	
+	const FVector LeftOfSpread = Forward.RotateAngleAxis(-Spread / 2.f, Axis);
+	if (NumRotators > 1)
+	{
+		// if we divide directly by NumProjectiles there will be problems. Eg, if we have 2 projectiles then, the first one will start at LeftOfSpread since the angle starts at 0 but the next one will be at 45 since we divide the spread by 2
+		// which we do not want, but instead we want it at the RightOfSpread which is 90 degrees. So we have to divide the spread by Number of Projectiles less by one (1), which will give 90 for the second one.
+		const float DeltaSpread = Spread / (NumRotators - 1);
+		for (int32 i = 0; i < NumRotators; i++)
+		{
+			const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, Axis);
+			Rotators.Add(Direction.Rotation());		
+		}
+	}
+	else
+	{
+		Rotators.Add(Forward.Rotation());
+	}
+	return Rotators;
+}
+
+TArray<FVector> UAuraAbilitySystemLibrary::EvenlyRotatedVectors(const FVector& Forward, const FVector& Axis, float Spread, int32 NumVectors)
+{
+	TArray<FVector> Vectors;
+	
+	const FVector LeftOfSpread = Forward.RotateAngleAxis(-Spread / 2.f, Axis);
+	if (NumVectors > 1)
+	{
+		// if we divide directly by NumProjectiles there will be problems. Eg, if we have 2 projectiles then, the first one will start at LeftOfSpread since the angle starts at 0 but the next one will be at 45 since we divide the spread by 2
+		// which we do not want, but instead we want it at the RightOfSpread which is 90 degrees. So we have to divide the spread by Number of Projectiles less by one (1), which will give 90 for the second one.
+		const float DeltaSpread = Spread / (NumVectors - 1);
+		for (int32 i = 0; i < NumVectors; i++)
+		{
+			const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, Axis);
+			Vectors.Add(Direction);		
+		}
+	}
+	else
+	{
+		Vectors.Add(Forward);
+	}
+	return Vectors;
+}
+
+
