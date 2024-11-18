@@ -43,6 +43,7 @@ public:
 	virtual ECharacterClass GetCharacterClass_Implementation() const override;
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
 	virtual FOnDeath GetOnDeathDelegate() override;
+	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	/* CombatInterface */
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath(const FVector& InDeathImpulse);
