@@ -9,7 +9,7 @@
 #include "CombatInterface.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeath, AActor*, DeadActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, DeadActor);
 
 class UNiagaraSystem;
 USTRUCT(BlueprintType)
@@ -89,7 +89,8 @@ public:
 	// This is a pure virtual function since we set it to zero. Anything that implements this will have to override this
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;
 
-	virtual FOnDeath GetOnDeathDelegate() = 0;
+	// It is important we don't return a copy of the delegate but the actual delegate that we created by returning a reference to it. Since it won't work.
+	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetInShockLoop(bool bInLoop);

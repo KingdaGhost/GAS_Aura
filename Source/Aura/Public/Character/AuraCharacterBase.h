@@ -42,7 +42,7 @@ public:
 	virtual void IncrementMinionCount_Implementation(int32 Amount) override;
 	virtual ECharacterClass GetCharacterClass_Implementation() const override;
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
-	virtual FOnDeath GetOnDeathDelegate() override;
+	virtual FOnDeathSignature& GetOnDeathDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	/* CombatInterface */
 	UFUNCTION(NetMulticast, Reliable)
@@ -52,7 +52,7 @@ public:
 	TArray<FTaggedMontage> AttackMontages;
 	
 	FOnASCRegistered OnASCRegistered;
-	FOnDeath OnDeath;
+	FOnDeathSignature OnDeathDelegate;
 	
 protected:
 	virtual void BeginPlay() override;
