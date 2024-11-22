@@ -38,7 +38,14 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 		FRotator Rotation = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
 		Rotation.Pitch = 45.f;
 		FVector ToTarget = Rotation.Vector();
-		Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;
+		if (KnockbackChance > 0.f)
+		{
+			Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;
+		}
+		else
+		{
+			Params.KnockbackForce = FVector::ZeroVector;
+		}
 		Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;
 	}
 	return Params;	
