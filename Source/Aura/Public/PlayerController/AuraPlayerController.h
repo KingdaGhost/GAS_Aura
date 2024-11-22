@@ -30,6 +30,7 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ClientShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit, const FText& Message);
+	void SetAutorunning(bool bInAutorun);
 	
 protected:
 	virtual void BeginPlay() override;

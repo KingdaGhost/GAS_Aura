@@ -87,7 +87,7 @@ public:
 	ECharacterClass GetCharacterClass() const;
 
 	// This is a pure virtual function since we set it to zero. Anything that implements this will have to override this
-	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;
+	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;
 
 	// It is important we don't return a copy of the delegate but the actual delegate that we created by returning a reference to it. Since it won't work.
 	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;

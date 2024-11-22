@@ -43,6 +43,7 @@ public:
 	virtual int32 GetPlayerLevel_Implementation() override;
 	/** Combat Interface*/
 	virtual void OnRep_Stunned() override;
+	virtual void OnRep_Burned() override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
@@ -50,6 +51,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Replicated)
 	bool bInShockLoop = false;
 
+protected:
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
 private:
 	virtual void InitAbilityActorInfo() override;
 	
