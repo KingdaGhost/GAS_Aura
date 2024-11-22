@@ -151,10 +151,13 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		}
 		else
 		{
-			FGameplayTagContainer TagContainer;
-			TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-			// Props.TargetASC is the owner of this attribute set, the thing being affected
-			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			if (Props.TargetCharacter->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsBeingShock(Props.TargetCharacter))
+			{
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+				// Props.TargetASC is the owner of this attribute set, the thing being affected
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}			
 			
 			const FVector& KnockbackForce = UAuraAbilitySystemLibrary::GetKnockbackForce(Props.EffectContextHandle);
 			if (!KnockbackForce.IsNearlyZero(1.f))
@@ -326,18 +329,21 @@ void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
 
 void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bBlockedHit, bool bCriticalHit, const FText& Message) const
 {
-	if (Props.SourceCharacter != Props.TargetCharacter)
+	if (Props.SourceCharacter && Props.TargetCharacter)
 	{
-		// We should cast the Controller of the Character that we are controlling on the clients
-		if(AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller))
+		if (Props.SourceCharacter != Props.TargetCharacter)
 		{
-			PC->ClientShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit, Message);
-			return;
-		}
-		// This is for checking when enemies are attacking aura
-		if(AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.TargetCharacter->Controller))
-		{
-			PC->ClientShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit, Message);
+			// We should cast the Controller of the Character that we are controlling on the clients
+			if(AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller))
+			{
+				PC->ClientShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit, Message);
+				return;
+			}
+			// This is for checking when enemies are attacking aura
+			if(AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.TargetCharacter->Controller))
+			{
+				PC->ClientShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit, Message);
+			}
 		}
 	}
 }
