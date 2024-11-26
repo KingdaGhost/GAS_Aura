@@ -38,18 +38,25 @@ public:
 	void ServerEquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& SlotTag);
 	UFUNCTION(Client, Reliable)
 	void ClientEquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlot);
+
 	//Marking them static means making them as utility function
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	FGameplayAbilitySpec* GetSpecFromAbilityTag(const FGameplayTag& AbilityTag);
 	FGameplayTag GetStatusFromAbilityTag(const FGameplayTag& AbilityTag);
-	FGameplayTag GetInputTagFromAbilityTag(const FGameplayTag& AbilityTag);
+	FGameplayTag GetSlotFromAbilityTag(const FGameplayTag& AbilityTag);
+	bool SlotIsEmpty(const FGameplayTag& Slot);
+	bool AbilityHasSlot(const FGameplayAbilitySpec& AbilitySpec, const FGameplayTag& Slot) const;
+	FGameplayAbilitySpec* GetSpecWithSlot(const FGameplayTag& Slot);
+	bool IsPassiveAbility(const FGameplayAbilitySpec& AbilitySpec) const;
+	static void AssignSlotToAbility(FGameplayAbilitySpec& Spec, const FGameplayTag& Slot);
 
 	bool GetDescriptionsByAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);
-	void ClearSlot(FGameplayAbilitySpec* Spec);
+	static void ClearSlot(FGameplayAbilitySpec* Spec);
 	void ClearAbilitiesOfSlot(const FGameplayTag& SlotTag);
-	static bool AbilityHasSlot(FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag);
+	static bool AbilityHasSlot(const FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag);
+	static bool AbilityHasAnySlot(const FGameplayAbilitySpec& AbilitySpec);
 	
 	FEffectAssetTags EffectAssetTags;
 	FAbilitiesGiven AbilitiesGivenDelegate;
@@ -65,3 +72,9 @@ protected:
 	UFUNCTION(Client, Reliable)
 	void ClientUpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel);
 };
+
+
+
+
+
+
