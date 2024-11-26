@@ -266,20 +266,22 @@ void UAuraAttributeSet::HandleIncomingXP(const FEffectProperties& Props)
 		const int32 NumLevelUps = NewLevel - CurrentLevel;
 		if (NumLevelUps > 0)
 		{
+			int32 AttributePointsReward = 0;
+			int32 SpellPointsReward = 0;
 			// We need to do this so that when we level up multiple times at once, we would be able to get all the points that needs to be rewarded to us one level at a time
 			// Else we would only get one point for many level ups at once
 			for (int32 LevelUp = 1; LevelUp <= NumLevelUps; LevelUp++)
 			{
 				// GetAttributePointsReward()
-				const int32 AttributePointsReward = IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
+				AttributePointsReward += IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
 				// GetSpellPointsReward()
-				const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel);
-				// AddToAttributePoints() and AddToSpellPoints()
-				IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
-				IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
+				SpellPointsReward += IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel);
 				// This is to make sure that we get to get the points for all levels up until the expected level. Example if the NumLevelUps is 3 then the CurrentLevel will be increased 3 times each time adding to the points from its level
 				CurrentLevel++;
 			}
+			// AddToAttributePoints() and AddToSpellPoints()
+			IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
+			IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
 			// AddToPlayerLevel() This needs to be done only once as the NumLevelUps has already been calculated at once
 			IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
 			// Fill up Health and Mana
