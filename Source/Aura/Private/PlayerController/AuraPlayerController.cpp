@@ -109,13 +109,16 @@ void AAuraPlayerController::SetAutorunning(bool bInAutorun)
 	bAutoRunning = bInAutorun;
 }
 
-void AAuraPlayerController::ShowMagicCircle()
+void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 {
 	if (!IsValid(MagicCircle) && IsValid(MagicCircleClass))
 	{
 		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass);
-	}
-	
+		if (DecalMaterial)
+		{
+			MagicCircle->SetMagicCircleDecalMaterial(DecalMaterial);
+		}
+	}	
 }
 
 void AAuraPlayerController::HideMagicCircle()
@@ -125,6 +128,7 @@ void AAuraPlayerController::HideMagicCircle()
 		MagicCircle->Destroy();
 	}
 }
+
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {

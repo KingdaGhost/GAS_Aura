@@ -34,9 +34,10 @@ public:
 	void SetAutorunning(bool bInAutorun);
 
 	UFUNCTION(BlueprintCallable)
-	void ShowMagicCircle();
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial);
 	UFUNCTION(BlueprintCallable)
 	void HideMagicCircle();
+
 	
 protected:
 	virtual void BeginPlay() override;

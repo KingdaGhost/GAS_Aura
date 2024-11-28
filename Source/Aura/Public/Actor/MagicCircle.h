@@ -14,6 +14,7 @@ class AURA_API AMagicCircle : public AActor
 public:	
 	AMagicCircle();
 	virtual void Tick(float DeltaTime) override;
+	void SetMagicCircleDecalMaterial(UMaterialInterface* DecalMaterial) const;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -25,3 +26,5 @@ protected:
 	
 
 };
+
+
