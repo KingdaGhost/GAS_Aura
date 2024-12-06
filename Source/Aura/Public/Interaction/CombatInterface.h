@@ -10,6 +10,7 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, DeadActor);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageSignature, float /*DamageAmount*/)
 
 class UNiagaraSystem;
 USTRUCT(BlueprintType)
@@ -91,6 +92,8 @@ public:
 
 	// It is important we don't return a copy of the delegate but the actual delegate that we created by returning a reference to it. Since it won't work.
 	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;
+
+	virtual FOnDamageSignature& GetOnDamageDelegate() = 0;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetInShockLoop(bool bInLoop);
